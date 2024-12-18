@@ -7,11 +7,14 @@ df= pd.read_csv("Student Depression Dataset.csv")
 print(df.head())
 df.shape
 
+##Feature 1 number of people depressed on the basis of Age
+
 #Taking the unique age 
 df['Age'].unique()
 
-#Taking only depressed value
-new_filtered_df = df[df['Depression']==1]
+#Taking only depressed value and profession as student 
+new_filtered_df = df[(df['Depression'] == 1) & (df['Profession'] == 'Student')]
+
 
 
 
@@ -56,6 +59,9 @@ for i, value in enumerate(grouped):
 
 plt.savefig("eda_result/Depressed_by_age_group.png")
 
+
+##Feature 2 number of people depressed on the basis of Gender
+
 #filtering only gender and depression columns
 gender_filtered_df=new_filtered_df[['Gender','Depression']]
 
@@ -82,3 +88,43 @@ for i, value in enumerate(gender_grouped):
 
 
 plt.savefig("eda_result/Depressed_by_gender.png")
+
+
+##Feature 3 number of people depressed as per the degree
+
+#unique degree
+new_filtered_df['Degree'].unique()
+
+#taking only degree and depression columns
+filtered_degree=new_filtered_df[['Degree','Depression']]
+filtered_degree
+
+
+# Group by 'Degree' and sum the 'Depression' values
+grouped_degree = filtered_degree.groupby('Degree')['Depression'].sum()
+
+# Calculate the total depression count
+total_depression = grouped_degree.sum()
+
+# Filter out degrees where depression count is less than 10% of the total
+threshold = total_depression * 0.02
+other_category = grouped_degree[grouped_degree < threshold].sum()
+
+# Keep the degrees where depression count is greater than or equal to 10% of the total
+grouped_degree = grouped_degree[grouped_degree >= threshold]
+
+# Create a new series for the 'Other' category
+other_series = pd.Series({'Other': other_category})
+
+# Combine the 'Other' category with the rest of the grouped_degree
+grouped_degree = pd.concat([grouped_degree, other_series])
+print(grouped_degree)
+
+#Plotting using pie chart
+
+plt.figure(figsize=(8,8))
+plt.pie(grouped_degree,labels=grouped_degree.index,autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+
+plt.title('Distribution Of Depression counts by Degree')
+plt.axis('equal')
+plt.savefig("eda_result\Depressed_by_degree")
