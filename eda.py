@@ -13,7 +13,7 @@ df.shape
 df['Age'].unique()
 
 #Taking only depressed value and profession as student 
-new_filtered_df = df[(df['Depression'] == 1) & (df['Profession'] == 'Student')]
+new_filtered_df = df[(df['Depression'] == 1) & (df['Profession'] == 'Student') &(df['Dietary Habits']!='Others')]
 
 
 
@@ -144,7 +144,7 @@ financial_grouped = financial_group.groupby('Financial Stress')['Depression'].su
 #Ploting the visualization
 
 fig,fs_ax=plt.subplots()
-financial_grouped.plot(kind='bar',color='lightgreen',width=0.3)
+financial_grouped.plot(kind='bar',color='Darkgreen',width=0.3)
 plt.title('Number of Depressed Individuals by finance')
 plt.xlabel('Financial Stress')
 plt.ylabel('Depressed People Count')
