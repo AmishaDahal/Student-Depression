@@ -128,3 +128,129 @@ plt.pie(grouped_degree,labels=grouped_degree.index,autopct='%1.1f%%', startangle
 plt.title('Distribution Of Depression counts by Degree')
 plt.axis('equal')
 plt.savefig("eda_result\Depressed_by_degree")
+
+#Feature 4 Financial Stress anaylsis
+
+#unique value
+new_filtered_df['Financial Stress'].unique()
+
+#seprating column 
+financial_group = new_filtered_df[['Financial Stress','Depression']]
+
+#grouping the field
+
+financial_grouped = financial_group.groupby('Financial Stress')['Depression'].sum()
+
+#Ploting the visualization
+
+fig,fs_ax=plt.subplots()
+financial_grouped.plot(kind='bar',color='lightgreen',width=0.3)
+plt.title('Number of Depressed Individuals by finance')
+plt.xlabel('Financial Stress')
+plt.ylabel('Depressed People Count')
+plt.xticks(rotation =45)
+
+for i,value in enumerate(financial_grouped):
+    fs_ax.text(i,value+20,str(value),ha='center',va='bottom',fontsize=10)
+
+plt.savefig("eda_result/Depressed_by_financial_condition.png")
+
+## Feature 5 Dietary Habits anaylsis
+
+#unique value
+new_filtered_df['Dietary Habits'].unique()
+
+#seprating column 
+Habits=new_filtered_df[['Dietary Habits','Depression']]
+
+#grouping the field
+Habits_grouped =Habits.groupby('Dietary Habits')['Depression'].sum()
+
+#ploting the visualization 
+
+plt.figure(figsize=(5,5))
+plt.pie(Habits_grouped,labels=Habits_grouped.index,autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+plt.title('Distribution Of Depression counts by Dietary Habits')
+plt.axis('equal')
+
+plt.savefig("eda_result/Depressed_by_Dietary Habits.png")
+
+## Feature 6 Family History of Mental Illness anaylsis
+
+#unique value
+new_filtered_df['Family History of Mental Illness'].unique()
+
+#seprating column 
+illness=new_filtered_df[['Family History of Mental Illness','Depression']]
+
+#grouping the field
+illness_grouped =illness.groupby('Family History of Mental Illness')['Depression'].sum()
+
+#ploting the visualization 
+fig,ill_axis=plt.subplots()
+illness_grouped.plot(kind='bar',color='orange',width=0.8)
+plt.title('Family Depression History')
+plt.xlabel('Family History of Mental Illness')
+plt.ylabel('Depression Count')
+plt.xticks(rotation =45)
+
+for i,value in enumerate(illness_grouped):
+    ill_axis.text(i,value+20,str(value),ha='center',va='bottom',fontsize=10)
+
+plt.savefig("eda_result/Depressed_by_Family History.png")
+
+#Feature  7 Tracking Thoughts
+new_filtered_df['Have you ever had suicidal thoughts ?'].unique()
+suicidal_thoughts=new_filtered_df[['Have you ever had suicidal thoughts ?','Depression']]
+
+#Grouped by Thought
+suicidal_thoughts_grouped =suicidal_thoughts.groupby('Have you ever had suicidal thoughts ?')['Depression'].sum()
+
+
+# #plt the visulization
+plt.figure(figsize=(5,5))
+plt.pie(suicidal_thoughts_grouped,labels=suicidal_thoughts_grouped.index,autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+plt.title('Suicidal Thought Track')
+plt.axis('equal')
+
+plt.savefig("eda_result/Depressed_by_suicidal thought.png")
+
+##Feature 8 Sleep Duration
+#unique value
+
+new_filtered_df['Sleep Duration'].unique()
+
+#taking only depression and sleep column
+Sleep_depresion= new_filtered_df[['Sleep Duration','Depression']]
+
+# Categorize Sleep Duration
+def categorize_sleep_duration(Sleep_depresion):
+    if 'Less than 5' in Sleep_depresion or '5-6' in Sleep_depresion:  # Combine 'Less than 5 hours' and '5-6 hours'
+        return 'Less than 5 hours'
+    elif '7-8' in Sleep_depresion:
+        return '7-8 hours'
+    elif 'More than 8' in Sleep_depresion:
+        return 'Greater than 8 hours'
+    else:
+        return 'Others'
+    
+# Apply the updated categorization
+df['Sleep_depresion'] = df['Sleep Duration'].apply(categorize_sleep_duration)
+
+#Group by Sleep Group and calculate the sum of depression counts
+grouped_sleep = df.groupby('Sleep_depresion')['Depression'].sum()
+
+#plt the visulization
+
+fig,sleep_axis=plt.subplots()
+grouped_sleep.plot(kind='bar',color='Brown',width=0.8)
+plt.title('Depression Count by Sleep Duration')
+plt.xlabel('Sleep Duration Group')
+plt.ylabel('Number of Depressed Students')
+plt.xticks(rotation=45)
+
+# Annotate each bar with the depression count
+for i, value in enumerate(grouped_sleep):
+    sleep_axis.text(i, value + 10, str(value), ha='center', va='bottom', fontsize=10)
+
+plt.savefig("eda_result/Depressed_by_Sleep Duration.png")
