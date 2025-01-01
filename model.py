@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 new_filtered_df_new= pd.read_csv("features.csv")
-print(new_filtered_df_new.head())
+#print(new_filtered_df_new.head())
 new_filtered_df_new.shape
 
 
@@ -68,6 +68,7 @@ importance_matrix = feature_importance_df[['Importance']].T  # Transpose to make
 plt.figure(figsize=(10, 1))  # Adjust the size as needed
 sns.heatmap(importance_matrix, annot=True, cmap='YlGnBu', cbar=True, xticklabels=feature_importance_df['Feature'].values, yticklabels=['Importance'])
 plt.title('Feature Importance Heatmap')
+plt.legend()
 plt.savefig("eda_result/Heatmap.png")
 
 
