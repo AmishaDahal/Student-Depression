@@ -207,6 +207,7 @@ suicidal_thoughts=new_filtered_df[['Have you ever had suicidal thoughts ?','Depr
 suicidal_thoughts_grouped =suicidal_thoughts.groupby('Have you ever had suicidal thoughts ?')['Depression'].sum()
 
 
+
 # #plt the visulization
 plt.figure(figsize=(5,5))
 plt.pie(suicidal_thoughts_grouped,labels=suicidal_thoughts_grouped.index,autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
@@ -254,3 +255,8 @@ for i, value in enumerate(grouped_sleep):
     sleep_axis.text(i, value + 10, str(value), ha='center', va='bottom', fontsize=10)
 
 plt.savefig("eda_result/Depressed_by_Sleep Duration.png")
+
+
+
+
+
