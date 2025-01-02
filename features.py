@@ -55,7 +55,11 @@ print(filtered_df)
 
 #fetaures needed for our model 
 
-new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Degree_Label','Dietary_Habits_label','Family_History_of_Mental_Illness',
+# new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Degree_Label','Dietary_Habits_label','Family_History_of_Mental_Illness',
+#                       'suicidal_thoughts','Sleep_Duration_Label','Depression']]
+
+new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Academic Pressure','CGPA','Study Satisfaction','Work/Study Hours','Degree_Label',
+                                   'Dietary_Habits_label','Family_History_of_Mental_Illness',
                       'suicidal_thoughts','Sleep_Duration_Label','Depression']]
 
 print(new_filtered_df_new)
