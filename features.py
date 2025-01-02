@@ -9,7 +9,8 @@ from sklearn.model_selection import train_test_split
 
 
 df= pd.read_csv("Student Depression Dataset.csv")
-print(df.head())
+#print(df.head())
+print(df.columns.to_list())
 df.shape
 
 #filtering out other datat instead of student
@@ -43,28 +44,26 @@ custom_order_reversed = {value: idx + 1 for idx, value in enumerate(reversed(cus
 # Map the custom order to the 'Sleep Duration' column
 filtered_df['Sleep_Duration_Label'] = filtered_df['Sleep Duration'].map(custom_order_reversed)
 
-print(filtered_df)
+#print(filtered_df)
 
 
 #checking the class imbalance 
 
 filtered_df['Depression'].value_counts()
 
-print(filtered_df)
+#print(filtered_df)
 
 
 #fetaures needed for our model 
-
-# new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Degree_Label','Dietary_Habits_label','Family_History_of_Mental_Illness',
-#                       'suicidal_thoughts','Sleep_Duration_Label','Depression']]
 
 new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Academic Pressure','CGPA','Study Satisfaction','Work/Study Hours','Degree_Label',
                                    'Dietary_Habits_label','Family_History_of_Mental_Illness',
                       'suicidal_thoughts','Sleep_Duration_Label','Depression']]
 
-print(new_filtered_df_new)
+##print(new_filtered_df_new)
 
 
 new_filtered_df_new.to_csv('features.csv', index=False)
+print(new_filtered_df_new.columns.to_list())
 
 
