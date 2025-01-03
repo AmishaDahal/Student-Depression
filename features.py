@@ -62,6 +62,7 @@ new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Acad
 
 ##print(new_filtered_df_new)
 
+new_filtered_df_new=new_filtered_df_new.dropna(subset=['Financial Stress'])
 
 new_filtered_df_new.to_csv('features.csv', index=False)
 print(new_filtered_df_new.columns.to_list())
