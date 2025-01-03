@@ -12,7 +12,7 @@ import numpy as np
 
 new_filtered_df_new= pd.read_csv("features.csv")
 #print(new_filtered_df_new.head())
-new_filtered_df_new.shape
+print(new_filtered_df_new.isnull().sum())
 
 
 
@@ -109,3 +109,4 @@ print(f"F1 Score: {f1:.4f}")
 #Cross-validation for stability
 cv_scores = cross_val_score(model_filtered, X_filtered, y, cv=5, scoring='accuracy')
 print(f"\nCross-Validation Accuracy: {cv_scores.mean():.4f} (± {cv_scores.std():.4f})")
+
