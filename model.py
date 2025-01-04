@@ -413,19 +413,13 @@ precision = precision_score(y_test, y_pred, average='weighted', zero_division=0)
 recall = recall_score(y_test, y_pred, average='weighted', zero_division=0)
 f1 = f1_score(y_test, y_pred, average='weighted', zero_division=0)
 
-# Print metrics
+# Print m
 print("\nModel Performance with Gradient Boosting:")
 print(f"Accuracy: {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall: {recall:.4f}")
 print(f"F1 Score: {f1:.4f}")
 
-<<<<<<< HEAD
-#Cross-validation for stability
-cv_scores = cross_val_score(model_filtered, X_filtered, y, cv=5, scoring='accuracy')
-print(f"\nCross-Validation Accuracy: {cv_scores.mean():.4f} (± {cv_scores.std():.4f})")
-
-=======
 # Reshape feature importance to a 2D array (since heatmap expects a 2D matrix)
 importance_matrix = feature_importance_df[['Importance']].T  # Transpose to make it a 2D matrix
 
@@ -569,4 +563,3 @@ print(comparison_df_new)
 # Save the comparison table as a CSV file
 
 comparison_df_new.to_csv("eda_result/cross_validation_model_comparison.csv", index=False)
->>>>>>> origin
