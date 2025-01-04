@@ -13,9 +13,15 @@ df= pd.read_csv("Student Depression Dataset.csv")
 print(df.columns.to_list())
 df.shape
 
+# filtered_df = df.dropna(subset=['Financial Stress'])
+# filtered_df['Financial Stress'].unique()
+
 #filtering out other datat instead of student
 filtered_df = df[(df['Profession'] == 'Student') &(df['Dietary Habits']!='Others')]
 filtered_df
+
+
+
 
 #label encoding Encoding categorical data into numeric
 
@@ -56,14 +62,19 @@ filtered_df['Depression'].value_counts()
 
 #fetaures needed for our model 
 
+#filtering out other datat instead of student
+
+
 new_filtered_df_new = filtered_df[['Gender_Label','Age','Financial Stress','Academic Pressure','CGPA','Study Satisfaction','Work/Study Hours','Degree_Label',
                                    'Dietary_Habits_label','Family_History_of_Mental_Illness',
                       'suicidal_thoughts','Sleep_Duration_Label','Depression']]
 
 ##print(new_filtered_df_new)
 
+new_filtered_df_new=new_filtered_df_new.dropna(subset=['Financial Stress'])
 
 new_filtered_df_new.to_csv('features.csv', index=False)
 print(new_filtered_df_new.columns.to_list())
+
 
 
