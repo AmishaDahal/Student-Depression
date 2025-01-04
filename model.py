@@ -5,10 +5,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 
 new_filtered_df_new= pd.read_csv("features.csv")
 #print(new_filtered_df_new.head())
@@ -43,7 +45,7 @@ feature_importance_df = pd.DataFrame({
 })
 
 # Sort the features by importance
-feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False) 
 
 
 #model accuracy before feature importance
@@ -65,47 +67,140 @@ print(f"F1 Score: {f1:.4f}")
 importance_matrix = feature_importance_df[['Importance']].T  # Transpose to make it a 2D matrix
 
 # Create the heatmap
-plt.figure(figsize=(10, 1))  # Adjust the size as needed
+plt.figure(figsize=(15, 10))  # Adjust the size as needed
 sns.heatmap(importance_matrix, annot=True, cmap='YlGnBu', cbar=True, xticklabels=feature_importance_df['Feature'].values, yticklabels=['Importance'])
 plt.title('Feature Importance Heatmap')
-plt.legend()
+
 plt.savefig("eda_result/Heatmap.png")
 
 
-# Remove low-importance features (set a threshold, e.g., < 0.03)
-low_importance_features = feature_importance_df[feature_importance_df['Importance'] < 0.03]['Feature'].tolist()
-print(f"Low-importance features to drop: {low_importance_features}")
+# # Remove low-importance features (set a threshold, e.g., < 0.03)
+# low_importance_features = feature_importance_df[feature_importance_df['Importance'] < 0.03]['Feature'].tolist()
+# print(f"Low-importance features to drop: {low_importance_features}")
 
-# Drop low-importance features
-X_filtered = X.drop(columns=low_importance_features)
-
-print(X_filtered)
+# # Drop low-importance features
+# X_filtered = X.drop(columns=low_importance_features)
 
 
-# Retrain the model with filtered features
-X_train_filtered, X_test_filtered, y_train_filtered, y_test_filtered = train_test_split(
-    X_filtered, y, test_size=0.2, random_state=42, shuffle=True
+# # Retrain the model with filtered features
+# X_train_filtered, X_test_filtered, y_train_filtered, y_test_filtered = train_test_split(
+#     X_filtered, y, test_size=0.2, random_state=42, shuffle=True
+# )
+
+# model_filtered = RandomForestClassifier(random_state=42,class_weight='balanced')
+# model_filtered.fit(X_train_filtered, y_train_filtered)
+
+
+# #Evaluate the filtered model
+
+# y_pred_filtered = model_filtered.predict(X_test_filtered)
+
+# accuracy = accuracy_score(y_test_filtered, y_pred_filtered)
+# precision = precision_score(y_test_filtered, y_pred_filtered, average='weighted')
+# recall = recall_score(y_test_filtered, y_pred_filtered, average='weighted')
+# f1 = f1_score(y_test_filtered, y_pred_filtered, average='weighted')
+
+# print("\nModel Performance with Filtered Features:")
+# print(f"Accuracy: {accuracy:.4f}")
+# print(f"Precision: {precision:.4f}")
+# print(f"Recall: {recall:.4f}")
+# print(f"F1 Score: {f1:.4f}")
+
+#Cross-validation for stability
+# cv_scores = cross_val_score(model_filtered, X_filtered, y, cv=5, scoring='accuracy')
+# print(f"\nCross-Validation Accuracy: {cv_scores.mean():.4f} (± {cv_scores.std():.4f})")
+
+# Use StratifiedKFold with fewer splits (e.g., 3)
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# Example with Random Forest
+random_forest = RandomForestClassifier(random_state=42)
+scores = cross_val_score(random_forest, X, y, cv=skf, scoring='accuracy')
+
+print("Random Forest: Mean Accuracy = {:.4f}, Std Dev = {:.4f}".format(scores.mean(), scores.std()))
+
+##Random Forest classifier
+##logistic regression
+##decision tree
+##XGboost
+##gradient boost 
+
+#Train a logistic regression model 
+
+ # Assuming X_train and y_train are already defined and cleaned
+logistic_model = LogisticRegression(max_iter=1000, random_state=42)
+logistic_model.fit(X_train, y_train)
+
+# Use coefficients for feature importance
+coefficients = np.abs(logistic_model.coef_[0])  # Get absolute values of coefficients
+feature_importances = coefficients / np.sum(coefficients)  # Normalize for interpretability
+
+# Create a DataFrame to display feature importance
+feature_importance_df = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Importance': feature_importances
+}).sort_values(by='Importance', ascending=False)
+
+# Plot a heatmap for feature importance
+plt.figure(figsize=(15, 5))
+sns.heatmap(
+    feature_importance_df[['Importance']].T, 
+    annot=True, 
+    cmap='YlGnBu', 
+    cbar=True, 
+    xticklabels=feature_importance_df['Feature'].values, 
+    yticklabels=['Importance']
 )
+plt.title('Logistic Regression Feature Importance Heatmap')
+plt.show()
 
-model_filtered = RandomForestClassifier(random_state=42,class_weight='balanced')
-model_filtered.fit(X_train_filtered, y_train_filtered)
+# Evaluate model accuracy
+log_y_pred = logistic_model.predict(X_test)
+accuracy = accuracy_score(y_test, log_y_pred)
+precision = precision_score(y_test, log_y_pred, average='weighted')
+recall = recall_score(y_test, log_y_pred, average='weighted')
+f1 = f1_score(y_test, log_y_pred, average='weighted')
 
-
-#Evaluate the filtered model
-
-y_pred_filtered = model_filtered.predict(X_test_filtered)
-
-accuracy = accuracy_score(y_test_filtered, y_pred_filtered)
-precision = precision_score(y_test_filtered, y_pred_filtered, average='weighted')
-recall = recall_score(y_test_filtered, y_pred_filtered, average='weighted')
-f1 = f1_score(y_test_filtered, y_pred_filtered, average='weighted')
-
-print("\nModel Performance with Filtered Features:")
+print("\nModel Performance with Logistic Regression:")
 print(f"Accuracy: {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall: {recall:.4f}")
 print(f"F1 Score: {f1:.4f}")
 
-#Cross-validation for stability
-cv_scores = cross_val_score(model_filtered, X_filtered, y, cv=5, scoring='accuracy')
-print(f"\nCross-Validation Accuracy: {cv_scores.mean():.4f} (± {cv_scores.std():.4f})")
+#crossvalidation using  stratified K -fold
+
+#straified K-fold setup 
+
+skf=StratifiedKFold(n_splits=5,shuffle=True,random_state=42)
+
+#Arrays to store metrics for each fold
+
+accuracies=[]
+precisions=[]
+recalls=[]
+f1_scores=[]
+
+#Stratified k-fold cross-validation
+
+for train_index,test_index in skf.split(X,y):
+    X_train,X_test=X.iloc[train_index],X.iloc[test_index]
+    y_train,y_test=y.iloc[train_index],y.iloc[test_index]
+
+    #Train the model
+    logistic_model.fit(X_train,y_train)
+
+     # Predict on the test set
+    y_pred = logistic_model.predict(X_test)
+
+    # Calculate metrics
+    accuracies.append(accuracy_score(y_test, y_pred))
+    precisions.append(precision_score(y_test, y_pred, average='weighted'))
+    recalls.append(recall_score(y_test, y_pred, average='weighted'))
+    f1_scores.append(f1_score(y_test, y_pred, average='weighted'))
+
+# Compute mean and standard deviation for each metric
+print("Stratified K-Fold Cross-Validation logistic Results:")
+print(f"Accuracy: {np.mean(accuracies):.4f} ± {np.std(accuracies):.4f}")
+print(f"Precision: {np.mean(precisions):.4f} ± {np.std(precisions):.4f}")
+print(f"Recall: {np.mean(recalls):.4f} ± {np.std(recalls):.4f}")
+print(f"F1 Score: {np.mean(f1_scores):.4f} ± {np.std(f1_scores):.4f}")
