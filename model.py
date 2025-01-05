@@ -17,7 +17,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 new_filtered_df_new= pd.read_csv("features.csv")
 #print(new_filtered_df_new.head())
-new_filtered_df_new.shape
+print(new_filtered_df_new.isnull().sum())
 
 
 
@@ -413,7 +413,7 @@ precision = precision_score(y_test, y_pred, average='weighted', zero_division=0)
 recall = recall_score(y_test, y_pred, average='weighted', zero_division=0)
 f1 = f1_score(y_test, y_pred, average='weighted', zero_division=0)
 
-# Print metrics
+# Print m
 print("\nModel Performance with Gradient Boosting:")
 print(f"Accuracy: {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
