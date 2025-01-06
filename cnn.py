@@ -9,7 +9,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 
 data = pd.read_csv('features.csv')
-print(data.columns.to_list())
 X = data.drop(columns=['Depression'])  
 y = data['Depression'] 
 
@@ -35,9 +34,9 @@ model = Sequential([
 early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=3, min_lr=1e-6)
 
-model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=Adam(learning_rate=0.005), loss='binary_crossentropy', metrics=['accuracy'])
 
-history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=20, batch_size=12, callbacks=[early_stopping, reduce_lr])
+history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=20, batch_size=16, callbacks=[early_stopping, reduce_lr])
 
 test_loss, test_accuracy = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {test_accuracy:.4f}")
