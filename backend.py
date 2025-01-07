@@ -9,7 +9,7 @@ model = tf.keras.models.load_model("student_depression_model.h5")
 
 class StudentFeatures(BaseModel):
     Gender_Label: int
-    Age: float
+    Age: int
     Financial_Stress: float
     Academic_Pressure: float
     CGPA: float
