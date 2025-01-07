@@ -9,6 +9,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 
 data = pd.read_csv('features.csv')
+print(data.columns)
 X = data.drop(columns=['Depression'])  
 y = data['Depression'] 
 
@@ -40,3 +41,5 @@ history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=2
 
 test_loss, test_accuracy = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {test_accuracy:.4f}")
+model.save("student_depression_model.h5")
+
