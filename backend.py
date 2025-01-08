@@ -2,10 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import tensorflow as tf
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+import pickle
 
 app = FastAPI()
 
+# Load the trained model
 model = tf.keras.models.load_model("student_depression_model.h5")
+
+# Load the scaler used during training
+with open("scaler.pkl", "rb") as f:
+    scaler = pickle.load(f)
 
 class StudentFeatures(BaseModel):
     Gender_Label: int
@@ -30,8 +37,10 @@ def predict(features: StudentFeatures):
         features.Dietary_Habits_label, features.Family_History_of_Mental_Illness, 
         features.Suicidal_Thoughts, features.Sleep_Duration_Label
     ]])
-    data_scaled = (data - data.mean(axis=0)) / data.std(axis=0)
+    data_scaled = scaler.transform(data)
     data_cnn = data_scaled.reshape(1, 3, 4, 1)
     prediction = model.predict(data_cnn)
-    depressed = bool(prediction[0][0] > 0.5)
-    return {"depressed": depressed, "probability": float(prediction[0][0])}
+    probability = float(prediction[0][0])
+    depressed = probability > 0.5
+    return {"depressed": depressed, "probability": probability}
+

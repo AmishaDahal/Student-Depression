@@ -7,14 +7,18 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+import pickle
 
 data = pd.read_csv('features.csv')
-print(data.columns)
 X = data.drop(columns=['Depression'])  
 y = data['Depression'] 
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
+
+with open("scaler.pkl", "wb") as file:
+    pickle.dump(scaler, file)
+
 X_cnn = X_scaled.reshape(X_scaled.shape[0], 3, 4, 1)
 
 X_train, X_test, y_train, y_test = train_test_split(X_cnn, y, test_size=0.2, random_state=42)
@@ -42,4 +46,3 @@ history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=2
 test_loss, test_accuracy = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {test_accuracy:.4f}")
 model.save("student_depression_model.h5")
-
